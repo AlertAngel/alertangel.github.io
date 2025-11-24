@@ -56,7 +56,7 @@ acp() {
 # Exit on any error
 set -e
 
-trunk build --release 
+trunk build --release
 
 echo "Starting deployment process..."
 
@@ -72,6 +72,10 @@ rm -rf /tmp/aa_website/*
 echo "Copying new content..."
 cp -r dist/* /tmp/aa_website/
 
+echo "Pushing to main...."
+acp
+
+echo "Pushed to main"
 # Change to the worktree directory
 cd /tmp/aa_website/
 
@@ -82,8 +86,3 @@ acp
 echo "Pushed to gh-pages"
 
 cd -
-
-echo "Pushing to main...."
-acp
-
-echo "Pushed to main"
