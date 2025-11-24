@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+# Exit on any error
+set -e
+
+trunk build --release
+
 git worktree remove /tmp/aa_website/
 
 acp() {
@@ -52,11 +57,6 @@ acp() {
 
   echo 'Changes added, committed, and pushed to all remotes'
 }
-
-# Exit on any error
-set -e
-
-trunk build --release
 
 echo "Starting deployment process..."
 
