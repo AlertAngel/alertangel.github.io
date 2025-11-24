@@ -29,9 +29,9 @@ impl  StartupScreen {
     {
         terminal.draw(|frame| {
             let layout = Layout::vertical([
-                Constraint::Percentage(20),
-                Constraint::Min(10),
-                Constraint::Percentage(20),
+                Constraint::Percentage(40),
+                Constraint::Min(30),
+                Constraint::Percentage(40),
             ])
                 .split(frame.area());
 
