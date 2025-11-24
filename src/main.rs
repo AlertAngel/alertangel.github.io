@@ -3,6 +3,7 @@ use ratatui::Terminal;
 use ratzilla::DomBackend;
 
 mod startup;   // This is the startup file
+//
 
 fn main() -> io::Result<()> {
     let backend = DomBackend::new()?;
