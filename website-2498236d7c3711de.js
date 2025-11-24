@@ -208,13 +208,100 @@ function makeMutClosure(arg0, arg1, dtor, f) {
     CLOSURE_DTORS.register(real, state, state);
     return real;
 }
-function wasm_bindgen__convert__closures_____invoke__hf1a3c0d69289b140(arg0, arg1) {
-    wasm.wasm_bindgen__convert__closures_____invoke__hf1a3c0d69289b140(arg0, arg1);
+function wasm_bindgen__convert__closures_____invoke__h51c9474fd67532b9(arg0, arg1) {
+    wasm.wasm_bindgen__convert__closures_____invoke__h51c9474fd67532b9(arg0, arg1);
 }
 
-function wasm_bindgen__convert__closures_____invoke__habba4a7f1c89924d(arg0, arg1, arg2) {
-    wasm.wasm_bindgen__convert__closures_____invoke__habba4a7f1c89924d(arg0, arg1, arg2);
+function wasm_bindgen__convert__closures_____invoke__hd92961de631736d7(arg0, arg1, arg2) {
+    wasm.wasm_bindgen__convert__closures_____invoke__hd92961de631736d7(arg0, arg1, arg2);
 }
+
+const TerminalDebugApiFinalization = (typeof FinalizationRegistry === 'undefined')
+    ? { register: () => {}, unregister: () => {} }
+    : new FinalizationRegistry(ptr => wasm.__wbg_terminaldebugapi_free(ptr >>> 0, 1));
+/**
+ * Debug API exposed to browser console for terminal inspection.
+ */
+export class TerminalDebugApi {
+
+    __destroy_into_raw() {
+        const ptr = this.__wbg_ptr;
+        this.__wbg_ptr = 0;
+        TerminalDebugApiFinalization.unregister(this);
+        return ptr;
+    }
+
+    free() {
+        const ptr = this.__destroy_into_raw();
+        wasm.__wbg_terminaldebugapi_free(ptr, 0);
+    }
+    /**
+     * Returns the symbol for a given glyph ID, or null if not found.
+     * @param {number} glyph_id
+     * @returns {string | undefined}
+     */
+    getSymbol(glyph_id) {
+        const ret = wasm.terminaldebugapi_getSymbol(this.__wbg_ptr, glyph_id);
+        let v1;
+        if (ret[0] !== 0) {
+            v1 = getStringFromWasm0(ret[0], ret[1]).slice();
+            wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
+        }
+        return v1;
+    }
+    /**
+     * Returns the cell size in pixels as an object with `width` and `height` fields.
+     * @returns {any}
+     */
+    getCellSize() {
+        const ret = wasm.terminaldebugapi_getCellSize(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * Returns the canvas size in pixels as an object with `width` and `height` fields.
+     * @returns {any}
+     */
+    getCanvasSize() {
+        const ret = wasm.terminaldebugapi_getCanvasSize(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * Returns the number of glyphs available in the font atlas.
+     * @returns {number}
+     */
+    getGlyphCount() {
+        const ret = wasm.terminaldebugapi_getGlyphCount(this.__wbg_ptr);
+        return ret >>> 0;
+    }
+    /**
+     * Returns the base glyph ID for a given symbol, or null if not found.
+     * @param {string} symbol
+     * @returns {number | undefined}
+     */
+    getBaseGlyphId(symbol) {
+        const ptr0 = passStringToWasm0(symbol, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ret = wasm.terminaldebugapi_getBaseGlyphId(this.__wbg_ptr, ptr0, len0);
+        return ret === 0xFFFFFF ? undefined : ret;
+    }
+    /**
+     * Returns the terminal size in cells as an object with `cols` and `rows` fields.
+     * @returns {any}
+     */
+    getTerminalSize() {
+        const ret = wasm.terminaldebugapi_getTerminalSize(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * Returns an array of glyphs that were requested but not found in the font atlas.
+     * @returns {Array<any>}
+     */
+    getMissingGlyphs() {
+        const ret = wasm.terminaldebugapi_getMissingGlyphs(this.__wbg_ptr);
+        return ret;
+    }
+}
+if (Symbol.dispose) TerminalDebugApi.prototype[Symbol.dispose] = TerminalDebugApi.prototype.free;
 
 const EXPECTED_RESPONSE_TYPES = new Set(['basic', 'cors', 'default']);
 
@@ -324,8 +411,20 @@ function __wbg_get_imports() {
         const ret = arg0.navigator;
         return ret;
     };
+    imports.wbg.__wbg_new_1acc0b6eea89d040 = function() {
+        const ret = new Object();
+        return ret;
+    };
+    imports.wbg.__wbg_new_e17d9f43105b08be = function() {
+        const ret = new Array();
+        return ret;
+    };
     imports.wbg.__wbg_new_no_args_ee98eee5275000a4 = function(arg0, arg1) {
         const ret = new Function(getStringFromWasm0(arg0, arg1));
+        return ret;
+    };
+    imports.wbg.__wbg_push_df81a39d04db858c = function(arg0, arg1) {
+        const ret = arg0.push(arg1);
         return ret;
     };
     imports.wbg.__wbg_screen_4c409a217b773441 = function() { return handleError(function (arg0) {
@@ -337,6 +436,10 @@ function __wbg_get_imports() {
     }, arguments) };
     imports.wbg.__wbg_setTimeout_780ac15e3df4c663 = function() { return handleError(function (arg0, arg1, arg2) {
         const ret = arg0.setTimeout(arg1, arg2);
+        return ret;
+    }, arguments) };
+    imports.wbg.__wbg_set_c2abbebe8b9ebee1 = function() { return handleError(function (arg0, arg1, arg2) {
+        const ret = Reflect.set(arg0, arg1, arg2);
         return ret;
     }, arguments) };
     imports.wbg.__wbg_set_innerHTML_fb5a7e25198fc344 = function(arg0, arg1, arg2) {
@@ -372,14 +475,24 @@ function __wbg_get_imports() {
         const ret = arg0.width;
         return ret;
     }, arguments) };
-    imports.wbg.__wbindgen_cast_5215e312c9f57b7e = function(arg0, arg1) {
-        // Cast intrinsic for `Closure(Closure { dtor_idx: 4, function: Function { arguments: [], shim_idx: 5, ret: Unit, inner_ret: Some(Unit) }, mutable: true }) -> Externref`.
-        const ret = makeMutClosure(arg0, arg1, wasm.wasm_bindgen__closure__destroy__h7d85127349e98249, wasm_bindgen__convert__closures_____invoke__hf1a3c0d69289b140);
+    imports.wbg.__wbindgen_cast_2241b6af4c4b2941 = function(arg0, arg1) {
+        // Cast intrinsic for `Ref(String) -> Externref`.
+        const ret = getStringFromWasm0(arg0, arg1);
         return ret;
     };
-    imports.wbg.__wbindgen_cast_e26c10a1c57635a8 = function(arg0, arg1) {
-        // Cast intrinsic for `Closure(Closure { dtor_idx: 19, function: Function { arguments: [NamedExternref("Event")], shim_idx: 20, ret: Unit, inner_ret: Some(Unit) }, mutable: true }) -> Externref`.
-        const ret = makeMutClosure(arg0, arg1, wasm.wasm_bindgen__closure__destroy__h83c19f19e11a06b5, wasm_bindgen__convert__closures_____invoke__habba4a7f1c89924d);
+    imports.wbg.__wbindgen_cast_5215e312c9f57b7e = function(arg0, arg1) {
+        // Cast intrinsic for `Closure(Closure { dtor_idx: 4, function: Function { arguments: [], shim_idx: 5, ret: Unit, inner_ret: Some(Unit) }, mutable: true }) -> Externref`.
+        const ret = makeMutClosure(arg0, arg1, wasm.wasm_bindgen__closure__destroy__h6edc2d35e75fabb7, wasm_bindgen__convert__closures_____invoke__h51c9474fd67532b9);
+        return ret;
+    };
+    imports.wbg.__wbindgen_cast_a5afac1633996a1c = function(arg0, arg1) {
+        // Cast intrinsic for `Closure(Closure { dtor_idx: 29, function: Function { arguments: [NamedExternref("Event")], shim_idx: 30, ret: Unit, inner_ret: Some(Unit) }, mutable: true }) -> Externref`.
+        const ret = makeMutClosure(arg0, arg1, wasm.wasm_bindgen__closure__destroy__h0303a710ad80f945, wasm_bindgen__convert__closures_____invoke__hd92961de631736d7);
+        return ret;
+    };
+    imports.wbg.__wbindgen_cast_d6cd19b81560fd6e = function(arg0) {
+        // Cast intrinsic for `F64 -> Externref`.
+        const ret = arg0;
         return ret;
     };
     imports.wbg.__wbindgen_init_externref_table = function() {
