@@ -29,7 +29,18 @@
         margin: 0px;
       }
     </style>
-  </head>
+  <link rel="modulepreload" href="/website-94827e733055e3e0.js" crossorigin="anonymous" integrity="sha384-bYnfaLjjETamzmgfttT1gYIWsFH0SjrgE0k+ughQafUQHgapsiZhaNWyKFudl7oQ"><link rel="preload" href="/website-94827e733055e3e0_bg.wasm" crossorigin="anonymous" integrity="sha384-uQ2yeWvVfYnCoVI9W+6NShCwtp/yxoxxuZa/32Qg7tKTyxuWc0V4abxwdW0lwnVL" as="fetch" type="application/wasm"></head>
   <body>
-  </body>
+  
+<script type="module">
+import init, * as bindings from '/website-94827e733055e3e0.js';
+const wasm = await init({ module_or_path: '/website-94827e733055e3e0_bg.wasm' });
+
+
+window.wasmBindings = bindings;
+
+
+dispatchEvent(new CustomEvent("TrunkApplicationStarted", {detail: {wasm}}));
+
+</script></body>
 </html>
