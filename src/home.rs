@@ -17,6 +17,7 @@ use ratatui::{
         Paragraph
     }
 };
+use wasm_bindgen::prelude::wasm_bindgen;
 
 use std::io;
 
@@ -66,11 +67,12 @@ impl HomeScreen {
                 }));
 
             // Demo Button
-            let demo_button = Self::create_button(
-                "Demo", 
-                "Get a feel of the UI and workflow before buying the device",
+            let demo_button = Self::create_clickable_button(
+                "Demo",
+                "Get a feel of the UI and Workflow before buying the device",
                 Color::Cyan,
-                ButtonState::Normal
+                ButtonState::Normal,
+                "demo-btn"
             );
 
             frame.render_widget(demo_button, button_layout[0]);
@@ -104,6 +106,20 @@ impl HomeScreen {
         })?;
 
         Ok(())
+    }
+
+    fn create_clickable_button<'a>(
+        title: &'a str,
+        tooltip: &'a str,
+        color: Color,
+        state: ButtonState,
+        id: &str,
+    ) -> Paragraph<'a> {
+        if id == "demo-btn" {
+            setup_button_click(id);
+        }
+
+        Self::create_button(title, tooltip, color, state)
     }
 
     fn create_button<'a>(
@@ -143,5 +159,19 @@ impl HomeScreen {
                     .style(Style::default().bg(bg_color))
             )
                 .alignment(Alignment::Center)
+    }
+}
+
+#[wasm_bindgen]
+extern "C" {
+    #[wasm_bindgen(js_namespace = console)]
+    fn log(s: &str);
+}
+
+fn setup_button_click(button_id: &str) {
+    use web_sys::window;
+
+    if button_id == "demo-btn" {
+        log("Demo Button Ready for Clicks");
     }
 }

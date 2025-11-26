@@ -7,6 +7,14 @@ use web_sys;
 // Modules
 mod startup;   // This is the startup file
 mod home;
+mod demo;
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Screen {
+    Startup,
+    Home,
+    Demo
+}
 
 fn main() -> io::Result<()> {
     show_startup()?;
@@ -42,5 +50,16 @@ fn show_home() -> io::Result<()> {
     let mut terminal = Terminal::new(backend)?;
 
     home::HomeScreen::start(&mut terminal)?;
+    Ok(())
+}
+
+#[wasm_bindgen]
+pub fn show_demo_screen() -> Result<(), JsValue> {
+    let backend = DomBackend::new().map_err(|e| JsValue::from_str(&e.to_string()))?;
+    let mut terminal = Terminal::new(backend).map_err(|e| JsValue::from_str(&e.to_string()))?;
+    terminal.clear().map_err(|e| JsValue::from_str(&e.to_string()))?;
+
+    demo::DemoScreen::start(&mut terminal).map_err(|e| JsValue::from_str(&e.to_string()))?;
+
     Ok(())
 }
