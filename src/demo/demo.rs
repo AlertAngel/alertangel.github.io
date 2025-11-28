@@ -17,6 +17,7 @@ thread_local! {
     static LAST_KEY: RefCell<Option<ArrowKeys>> = RefCell::new(None);
     static KEY_HISTORY: RefCell<Vec<ArrowKeys>> = RefCell::new(Vec::new());
     static DEMO_ACTIVE: RefCell<bool> = RefCell::new(false);
+    static LISTENER_ATTACHED: RefCell<bool> = RefCell::new(false);
 }
 
 pub struct DemoScreen;
@@ -116,8 +117,14 @@ impl DemoScreen {
             frame.render_widget(footer, layout[2]);
         })?;
 
-        // Set up key handler
-        Self::setup_key_handler();
+        // Only set up key handler once per demo session
+        LISTENER_ATTACHED.with(|attached| {
+            if !*attached.borrow() {
+                Self::setup_key_handler();
+                *attached.borrow_mut() = true;
+                console::log_1(&"Demo event listener attached".into());
+            }
+        });
 
         Ok(())
     }
@@ -134,22 +141,23 @@ impl DemoScreen {
             // Only handle if demo is active
             let is_active = DEMO_ACTIVE.with(|active| *active.borrow());
             if !is_active {
-                console::log_1(&"Demo not active, ignoring key".into());
                 return;
             }
 
             let key = event.key();
-            
-            console::log_1(&format!("Key pressed in demo: {}", key).into());
             
             // Check for ESC key
             if key == "Escape" {
                 console::log_1(&"ESC pressed, going back to home".into());
                 event.prevent_default();
                 
-                // Mark demo as inactive
+                // Mark demo as inactive and reset listener flag
                 DEMO_ACTIVE.with(|active| {
                     *active.borrow_mut() = false;
+                });
+                
+                LISTENER_ATTACHED.with(|attached| {
+                    *attached.borrow_mut() = false;
                 });
                 
                 // Clear demo state
@@ -167,7 +175,6 @@ impl DemoScreen {
             
             // Check for arrow keys
             if let Some(arrow_key) = ArrowKeys::from_key_string(&key) {
-                console::log_1(&format!("Arrow key detected: {:?}", arrow_key).into());
                 event.prevent_default();
                 
                 // Update global state
