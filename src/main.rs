@@ -80,7 +80,7 @@ pub fn show_demo_screen() -> Result<(), JsValue> {
     
     web_sys::console::log_1(&"Terminal cleared".into());
     
-    demo::DemoScreen::start(&mut terminal).map_err(|e| {
+    crate::demo::demo::DemoScreen::start(&mut terminal).map_err(|e| {
         let msg = format!("Demo screen error: {}", e);
         web_sys::console::log_1(&msg.clone().into());
         JsValue::from_str(&msg)

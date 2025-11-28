@@ -41,7 +41,7 @@ thread_local! {
     static DEMO_HOVERED: RefCell<bool> = RefCell::new(false);
     static BLOG_HOVERED: RefCell<bool> = RefCell::new(false);
     static CONTACT_HOVERED: RefCell<bool> = RefCell::new(false);
-    static LISTENERS_ATTACHED: RefCell<bool> = RefCell::new(false);
+    static HOME_ACTIVE: RefCell<bool> = RefCell::new(false);
 }
 
 impl HomeScreen {
@@ -49,6 +49,11 @@ impl HomeScreen {
         where 
             B: ratatui::backend::Backend,
     {
+        // Mark home as active
+        HOME_ACTIVE.with(|active| {
+            *active.borrow_mut() = true;
+        });
+
         terminal.draw(|frame| {
             let area = frame.area();
 
@@ -118,19 +123,12 @@ impl HomeScreen {
 
             frame.render_widget(footer, main_layout[2]);
 
-            // Store button areas for event handlers
-            // We need to capture these for the event handlers
-            LISTENERS_ATTACHED.with(|attached| {
-                if !*attached.borrow() {
-                    // Set up event handlers with the button areas
-                    Self::setup_event_handlers(
-                        button_layout[0],
-                        button_layout[2],
-                        button_layout[4]
-                    );
-                    *attached.borrow_mut() = true;
-                }
-            });
+            // Set up event handlers with button areas
+            Self::setup_event_handlers(
+                button_layout[0],
+                button_layout[2],
+                button_layout[4]
+            );
         })?;
 
         Ok(())
@@ -147,6 +145,12 @@ impl HomeScreen {
         // Click handler
         let window_for_click = window.clone();
         let click_closure = Closure::wrap(Box::new(move |event: web_sys::MouseEvent| {
+            // Only handle if home is active
+            let is_active = HOME_ACTIVE.with(|active| *active.borrow());
+            if !is_active {
+                return;
+            }
+
             let (col, row) = Self::get_terminal_coords(event.client_x(), event.client_y());
             
             console::log_1(&format!("Click at Col: {}, Row: {}", col, row).into());
@@ -154,9 +158,9 @@ impl HomeScreen {
             if Self::is_in_area(col, row, demo_area) {
                 console::log_1(&"Demo Button Clicked".into());
                 
-                // Reset listener flag for demo screen
-                LISTENERS_ATTACHED.with(|attached| {
-                    *attached.borrow_mut() = false;
+                // Mark home as inactive
+                HOME_ACTIVE.with(|active| {
+                    *active.borrow_mut() = false;
                 });
                 
                 let window_clone = window_for_click.clone();
@@ -188,6 +192,12 @@ impl HomeScreen {
         // Mousemove handler for hover effects
         let document_clone = document.clone();
         let mousemove_closure = Closure::wrap(Box::new(move |event: web_sys::MouseEvent| {
+            // Only handle if home is active
+            let is_active = HOME_ACTIVE.with(|active| *active.borrow());
+            if !is_active {
+                return;
+            }
+
             let (col, row) = Self::get_terminal_coords(event.client_x(), event.client_y());
             
             let demo_hover = Self::is_in_area(col, row, demo_area);
@@ -196,12 +206,10 @@ impl HomeScreen {
             
             let any_hover = demo_hover || blog_hover || contact_hover;
             
-            // Update cursor style - cast body to HtmlElement
+            // Update cursor style using setAttribute
             if let Some(body) = document_clone.body() {
-                if let Some(html_body) = body.dyn_ref::<web_sys::HtmlElement>() {
-                    let cursor_style = if any_hover { "pointer" } else { "default" };
-                    let _ = html_body.style().set_property("cursor", cursor_style);
-                }
+                let cursor_style = if any_hover { "cursor: pointer;" } else { "cursor: default;" };
+                let _ = body.set_attribute("style", cursor_style);
             }
             
             // Update hover states
