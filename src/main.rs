@@ -7,6 +7,7 @@ use web_sys;
 mod startup;
 mod home;
 mod demo;
+mod buttons;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Screen {
