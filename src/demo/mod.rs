@@ -10,7 +10,6 @@ use wasm_bindgen::JsCast;
 use web_sys::console;
 use std::io;
 use std::cell::RefCell;
-use std::rc::Rc;
 use crate::buttons::ArrowKeys;
 
 // Global state to persist across re-renders
