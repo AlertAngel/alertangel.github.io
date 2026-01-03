@@ -100,7 +100,7 @@ impl HomeScreen {
             let blog_state = BLOG_HOVERED.with(|h| if *h.borrow() { ButtonState::Hovered } else { ButtonState::Normal });
             let blog_button = Self::create_button(
                 "Blog",
-                "Coming Soon",
+                "Click here",
                 Color::Magenta,
                 blog_state,
             );
@@ -177,7 +177,15 @@ impl HomeScreen {
             }
             
             if Self::is_in_area(col, row, blog_area) {
-                console::log_1(&"Blog Button Clicked (Coming Soon)".into());
+                console::log_1(&"Blog Button Clicked".into());
+
+                // Open blog URL in new Tab
+                if let Some(window) = web_sys::window() {
+                    match window.open_with_url_and_target("https://plok.sh/AlertAngel/blog", "_blank") {
+                        Ok(_) => console::log_1(&"Blog opened successfully".into()),
+                        Err(e) => console::log_2(&"Failed to open blog".into(), &e),
+                    }
+                }
             }
             
             if Self::is_in_area(col, row, contact_area) {
