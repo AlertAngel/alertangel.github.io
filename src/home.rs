@@ -42,6 +42,7 @@ thread_local! {
     static BLOG_HOVERED: RefCell<bool> = RefCell::new(false);
     static CONTACT_HOVERED: RefCell<bool> = RefCell::new(false);
     static HOME_ACTIVE: RefCell<bool> = RefCell::new(false);
+    static HANDLERS_INITIALIZED: RefCell<bool> = RefCell::new(false);
 }
 
 impl HomeScreen {
@@ -100,7 +101,7 @@ impl HomeScreen {
             let blog_state = BLOG_HOVERED.with(|h| if *h.borrow() { ButtonState::Hovered } else { ButtonState::Normal });
             let blog_button = Self::create_button(
                 "Blog",
-                "Click here",
+                "Coming Soon",
                 Color::Magenta,
                 blog_state,
             );
@@ -135,6 +136,20 @@ impl HomeScreen {
     }
 
     fn setup_event_handlers(demo_area: Rect, blog_area: Rect, contact_area: Rect) {
+        // Check if handlers are already initialized
+        let already_initialized = HANDLERS_INITIALIZED.with(|initialized| {
+            let was_init = *initialized.borrow();
+            if !was_init {
+                *initialized.borrow_mut() = true;
+            }
+            was_init
+        });
+        
+        if already_initialized {
+            console::log_1(&"Event handlers already set up, skipping".into());
+            return;
+        }
+        
         use web_sys::window;
         
         let window = window().expect("no global window");
@@ -177,13 +192,13 @@ impl HomeScreen {
             }
             
             if Self::is_in_area(col, row, blog_area) {
-                console::log_1(&"Blog Button Clicked".into());
-
-                // Open blog URL in new Tab
+                console::log_1(&"Blog Button Clicked - Opening external link".into());
+                
+                // Open blog URL in new tab
                 if let Some(window) = web_sys::window() {
                     match window.open_with_url_and_target("https://plok.sh/AlertAngel/blog", "_blank") {
                         Ok(_) => console::log_1(&"Blog opened successfully".into()),
-                        Err(e) => console::log_2(&"Failed to open blog".into(), &e),
+                        Err(e) => console::log_2(&"Failed to open blog:".into(), &e),
                     }
                 }
             }
