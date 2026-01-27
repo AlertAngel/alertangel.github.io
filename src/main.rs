@@ -8,6 +8,7 @@ mod startup;
 mod home;
 mod demo;
 mod buttons;
+mod blog;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Screen {
