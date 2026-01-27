@@ -15,6 +15,7 @@ pub enum Screen {
     Startup,
     Home,
     Demo,
+    Blog,
 }
 
 fn main() -> io::Result<()> {
@@ -102,4 +103,26 @@ pub fn show_home_from_demo() -> Result<(), JsValue> {
     home::HomeScreen::start(&mut terminal).map_err(|e| JsValue::from_str(&e.to_string()))?;
     
     Ok(())
+}
+
+#[wasm_bindgen]
+pub fn show_blog_screen() -> Result<(), JsValue> {
+    web_sys::console::log_1(&"Showing Blog Screen".into());
+
+    let backend = DomBackend::new().map_err(|e| JsValue::from_str(&e.to_string()))?;
+
+    let mut terminal = Terminal::new(backend).map_err(|e| JsValue::from_str(&e.to_string()))?;
+
+    terminal.clear().map_err(|e| JsValue::from_str(&e.to_string()))?;
+
+    blog::BlogScreen::start(&mut terminal).map_err(|e| JsValue::from_str(&e.to_string()))?;
+
+    Ok(())
+}
+
+#[wasm_bindgen]
+pub fn show_home_from_blog() -> Result<(), JsValue> {
+    // Same as show_home_from_demo. This is just a wrapper so that the names are different to avoid
+    // confusion
+    show_home_from_demo()
 }

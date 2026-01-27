@@ -192,15 +192,24 @@ impl HomeScreen {
             }
             
             if Self::is_in_area(col, row, blog_area) {
-                console::log_1(&"Blog Button Clicked - Opening external link".into());
-                
-                // Open blog URL in new tab
-                if let Some(window) = web_sys::window() {
-                    match window.open_with_url_and_target("https://plok.sh/AlertAngel/blog", "_blank") {
-                        Ok(_) => console::log_1(&"Blog opened successfully".into()),
-                        Err(e) => console::log_2(&"Failed to open blog:".into(), &e),
-                    }
-                }
+                console::log_1(&"Blog Button Clicked - Opening Blog".into());
+
+                // Mark home as inactive
+                HOME_ACTIVE.with(|active| {
+                    *active.borrow_mut() = false;
+                });
+
+                let window_clone = window_for_click.clone();
+                let closure = Closure::once(Box::new(move || {
+                    let _ = crate::show_blog_screen();
+                }) as Box<dyn FnOnce()>);
+
+                window_clone.set_timeout_with_callback_and_timeout_and_arguments_0(
+                    closure.as_ref().unchecked_ref(),
+                    10 
+                ).expect("setTimeout Failed");
+
+                closure.forget();
             }
             
             if Self::is_in_area(col, row, contact_area) {
