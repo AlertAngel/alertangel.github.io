@@ -101,7 +101,7 @@ impl HomeScreen {
             let blog_state = BLOG_HOVERED.with(|h| if *h.borrow() { ButtonState::Hovered } else { ButtonState::Normal });
             let blog_button = Self::create_button(
                 "Blog",
-                "Coming Soon",
+                "Click here to read about new updates and the building process",
                 Color::Magenta,
                 blog_state,
             );
@@ -111,7 +111,7 @@ impl HomeScreen {
             let contact_state = CONTACT_HOVERED.with(|h| if *h.borrow() { ButtonState::Hovered } else { ButtonState::Normal });
             let contact_button = Self::create_button(
                 "Contact",
-                "Email : lorem@ipsummail.com",
+                "",
                 Color::Green,
                 contact_state,
             );
