@@ -196,7 +196,7 @@ impl HomeScreen {
                 
                 // Open blog URL in new tab
                 if let Some(window) = web_sys::window() {
-                    match window.open_with_url_and_target("https://plok.sh/AlertAngel/blog", "_blank") {
+                    match window.open_with_url_and_target("https://alertangel.github.io/blog", "_blank") {
                         Ok(_) => console::log_1(&"Blog opened successfully".into()),
                         Err(e) => console::log_2(&"Failed to open blog:".into(), &e),
                     }
